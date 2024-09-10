@@ -74,6 +74,34 @@ void InitPlugin(JApplication *app) {
         app
     ));
 
+// Digitization                                                                                                                                                                   
+    app->Add(new JOmniFactoryGeneratorT<SiliconTrackerDigi_factory>(
+        "RefDIRCRawHits",
+        {
+          "refBOT_Hits"
+        },
+        {
+          "RefDIRCRawHits",
+          "RefDIRCRawHitAssociations"
+        },
+        {
+            .threshold = 0.2 * dd4hep::keV,
+            .timeResolution = 10,
+        },
+        app
+    ));
+
+    // Convert raw digitized hits into hits with geometry info (ready for tracking)
+    app->Add(new JOmniFactoryGeneratorT<TrackerHitReconstruction_factory>(
+        "RefDIRCRecHits",
+        {"RefDIRCRawHits"},     // Input data collection tags
+	{"RefDIRCRecHits"},     // Output data tag
+	{
+            .timeResolution = 10,
+        },
+        app
+    ));
+
     // Digitization
     app->Add(new JOmniFactoryGeneratorT<SiliconTrackerDigi_factory>(
         "BackwardMPGDEndcapRawHits",
